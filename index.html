@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080808" />
+  <meta name="description" content="APEX — Semester OS · Semester schedule dashboard for Romel Lartey · UG CPEN Level 200" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <title>APEX — Semester OS</title>
+
+  <style>
+    /* ─── RESET ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+    /* ─── DESIGN TOKENS ─────────────────────────────────── */
+    :root {
+      --bg:        #080808;
+      --surface:   #0f0f0f;
+      --surface2:  #141414;
+      --border:    #1e1e1e;
+      --border2:   #2a2a2a;
+      --text:      #e8e8e8;
+      --text-muted:#555;
+      --text-dim:  #333;
+      --accent:    #4caf50;
+
+      /* Block type colors */
+      --lecture-bg:    #0a1929; --lecture-border: #1565c0; --lecture-text: #90caf9;
+      --lab-bg:        #12082a; --lab-border:     #6a1b9a; --lab-text:    #ce93d8;
+      --backend-bg:    #061a0e; --backend-border: #2e7d32; --backend-text:#81c784;
+      --ml-bg:         #1a1100; --ml-border:      #e65100; --ml-text:     #ffcc80;
+      --robotics-bg:   #1a0a00; --robotics-border:#bf360c; --robotics-text:#ff8a65;
+      --study-bg:      #1a0818; --study-border:   #880e4f; --study-text:  #f48fb1;
+      --group-bg:      #001a12; --group-border:   #00695c; --group-text:  #80cbc4;
+      --review-bg:     #0d0d0d; --review-border:  #333;    --review-text: #888;
+
+      --mono: 'JetBrains Mono', monospace;
+      --display: 'Syne', sans-serif;
+
+      /* Layout */
+      --axis-width: 52px;
+      --col-min: 120px;
+      --px-per-min: 1.4;
+      --start-min: 420; /* 07:00 = 420 minutes from midnight */
+      --total-min: 960; /* 07:00–23:00 = 16 hours = 960 min */
+      --grid-height: calc(960 * 1.4px); /* 1344px */
+    }
+
+    /* ─── SCROLLBAR ──────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+    /* ─── APP SHELL ──────────────────────────────────────── */
+    #app { display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* ─── HEADER ─────────────────────────────────────────── */
+    .apex-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .apex-header .institution {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .apex-header .app-title {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .apex-header .app-title .accent { color: var(--accent); }
+    .apex-header .subtitle {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+    }
+    .apex-header .header-sep {
+      margin-top: 12px;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── LEGEND ─────────────────────────────────────────── */
+    .legend {
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .legend-label {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-right: 4px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .legend-dot {
+      width: 8px; height: 8px;
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
+
+    /* ─── MAIN CONTENT ───────────────────────────────────── */
+    .main-content { flex: 1; overflow: hidden; }
+
+    /* ─── WEEK SUMMARY BAR ───────────────────────────────── */
+    .week-summary {
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .day-summary-card {
+      flex: 1;
+      min-width: 72px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface2);
+      text-align: center;
+      cursor: default;
+    }
+    .day-summary-card.today {
+      border-color: var(--accent);
+      background: #061a0e;
+    }
+    .day-summary-card .ds-name {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+    }
+    .day-summary-card.today .ds-name { color: var(--accent); }
+    .day-summary-card .ds-counts {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+    .ds-chip {
+      font-family: var(--mono);
+      font-size: 8px;
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+    .ds-chip.uni { background: #0a1929; color: #90caf9; }
+    .ds-chip.personal { background: #061a0e; color: #81c784; }
+    .ds-chip.dot {
+      width: 8px; height: 8px; padding: 0;
+      border-radius: 50%;
+      align-self: center;
+    }
+
+    /* ─── DESKTOP GRID ───────────────────────────────────── */
+    .desktop-grid {
+      display: flex;
+      overflow: auto;
+      height: calc(100vh - 210px);
+      background: var(--bg);
+    }
+    .time-axis {
+      width: var(--axis-width);
+      flex-shrink: 0;
+      position: relative;
+      height: var(--grid-height);
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .time-tick {
+      position: absolute;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .time-tick span {
+      font-family: var(--mono);
+      font-size: 7px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      padding-right: 6px;
+    }
+    .time-tick::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      z-index: 0;
+    }
+
+    .days-container {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+    }
+    .day-col {
+      flex: 1;
+      min-width: var(--col-min);
+      position: relative;
+      height: var(--grid-height);
+      border-right: 1px solid var(--border);
+    }
+    .day-col:last-child { border-right: none; }
+    .day-col-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 6px 8px;
+      text-align: center;
+    }
+    .day-col-header .day-name {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .day-col-header .day-name.today-col { color: var(--accent); }
+    .day-col-header .day-date {
+      font-family: var(--mono);
+      font-size: 7px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    /* Hour lines inside day columns */
+    .hour-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 1px;
+      background: var(--border);
+      pointer-events: none;
+    }
+
+    /* ─── BLOCKS (DESKTOP) ───────────────────────────────── */
+    .block {
+      position: absolute;
+      left: 3px;
+      right: 3px;
+      border-left: 2px solid;
+      border-radius: 2px;
+      padding: 3px 5px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: filter 0.15s ease, transform 0.1s ease;
+      z-index: 5;
+    }
+    .block:hover {
+      filter: brightness(1.25);
+      z-index: 6;
+    }
+    .block:active { transform: scale(0.98); }
+
+    .block-time {
+      font-family: var(--mono);
+      font-size: 7px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      line-height: 1.3;
+    }
+    .block-title {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 9px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+    .block-subtitle {
+      font-family: var(--display);
+      font-size: 7.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.3;
+    }
+    .block-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 6px;
+      letter-spacing: 0.08em;
+      padding: 1px 3px;
+      border-radius: 2px;
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Type-specific block colors */
+    .block.lecture  { background: var(--lecture-bg);  border-color: var(--lecture-border);  color: var(--lecture-text); }
+    .block.lab      { background: var(--lab-bg);      border-color: var(--lab-border);      color: var(--lab-text); }
+    .block.backend  { background: var(--backend-bg);  border-color: var(--backend-border);  color: var(--backend-text); }
+    .block.ml       { background: var(--ml-bg);       border-color: var(--ml-border);       color: var(--ml-text); }
+    .block.robotics { background: var(--robotics-bg); border-color: var(--robotics-border); color: var(--robotics-text); }
+    .block.study    { background: var(--study-bg);    border-color: var(--study-border);    color: var(--study-text); }
+    .block.group    { background: var(--group-bg);    border-color: var(--group-border);    color: var(--group-text); }
+    .block.review   { background: var(--review-bg);   border-color: var(--review-border);   color: var(--review-text); }
+
+    .block-tag.lecture  { background: #0d2137; color: var(--lecture-text); }
+    .block-tag.lab      { background: #1a0e30; color: var(--lab-text); }
+    .block-tag.backend  { background: #082215; color: var(--backend-text); }
+    .block-tag.ml       { background: #241700; color: var(--ml-text); }
+    .block-tag.robotics { background: #240d00; color: var(--robotics-text); }
+    .block-tag.study    { background: #240c21; color: var(--study-text); }
+    .block-tag.group    { background: #00221a; color: var(--group-text); }
+    .block-tag.review   { background: #1a1a1a; color: var(--review-text); }
+
+    /* SACRED block override */
+    .block.sacred {
+      border: 1px solid #4caf50 !important;
+      border-left: 3px solid #4caf50 !important;
+      box-shadow: 0 0 8px #4caf5022;
+    }
+    .sacred-tag {
+      color: #4caf50 !important;
+      font-family: var(--mono);
+      font-size: 6px;
+      font-weight: 700;
+    }
+
+    /* ─── CURRENT TIME LINE ──────────────────────────────── */
+    .time-now-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 1px;
+      background: var(--accent);
+      z-index: 20;
+      pointer-events: none;
+    }
+    .time-now-line::before {
+      content: attr(data-time);
+      position: absolute;
+      left: -52px;
+      top: -7px;
+      font-family: var(--mono);
+      font-size: 7px;
+      color: var(--accent);
+      background: var(--bg);
+      padding: 0 2px;
+      white-space: nowrap;
+    }
+    .time-now-dot {
+      position: absolute;
+      left: -3px;
+      top: -3px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* ─── MOBILE VIEW ────────────────────────────────────── */
+    .mobile-view { display: none; }
+
+    .day-tabs {
+      display: flex;
+      gap: 6px;
+      padding: 10px 12px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .day-tab {
+      flex-shrink: 0;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border2);
+      background: var(--surface2);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .day-tab.active {
+      color: var(--accent);
+      background: #0a2010;
+      border-color: var(--accent);
+    }
+    .day-tab:hover:not(.active) {
+      color: var(--text);
+      border-color: var(--border2);
+    }
+
+    .mobile-now-banner {
+      margin: 10px 12px;
+      padding: 6px 12px;
+      background: #061a0e;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      display: none;
+    }
+    .mobile-now-banner.visible { display: block; }
+
+    .day-view {
+      display: none;
+      padding: 10px 12px;
+      flex-direction: column;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .day-view.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* Mobile block card */
+    .mobile-block {
+      border-left: 16px solid;
+      border-radius: 4px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: filter 0.15s ease;
+      position: relative;
+    }
+    .mobile-block:hover { filter: brightness(1.2); }
+    .mobile-block.lecture  { background: var(--lecture-bg);  border-color: var(--lecture-border); }
+    .mobile-block.lab      { background: var(--lab-bg);      border-color: var(--lab-border); }
+    .mobile-block.backend  { background: var(--backend-bg);  border-color: var(--backend-border); }
+    .mobile-block.ml       { background: var(--ml-bg);       border-color: var(--ml-border); }
+    .mobile-block.robotics { background: var(--robotics-bg); border-color: var(--robotics-border); }
+    .mobile-block.study    { background: var(--study-bg);    border-color: var(--study-border); }
+    .mobile-block.group    { background: var(--group-bg);    border-color: var(--group-border); }
+    .mobile-block.review   { background: var(--review-bg);   border-color: var(--review-border); }
+
+    .mobile-block.sacred {
+      border-left: 16px solid #4caf50 !important;
+      box-shadow: 0 0 12px #4caf5022;
+    }
+
+    .mb-time {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      margin-bottom: 3px;
+    }
+    .mb-title {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .mb-subtitle {
+      font-family: var(--display);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .mb-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.06em;
+      padding: 2px 6px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .mb-tag.lecture  { background: #0d2137; color: var(--lecture-text); }
+    .mb-tag.lab      { background: #1a0e30; color: var(--lab-text); }
+    .mb-tag.backend  { background: #082215; color: var(--backend-text); }
+    .mb-tag.ml       { background: #241700; color: var(--ml-text); }
+    .mb-tag.robotics { background: #240d00; color: var(--robotics-text); }
+    .mb-tag.study    { background: #240c21; color: var(--study-text); }
+    .mb-tag.group    { background: #00221a; color: var(--group-text); }
+    .mb-tag.review   { background: #1a1a1a; color: var(--review-text); }
+    .mb-tag.sacred   { background: #0a2010; color: #4caf50; }
+
+    /* ─── MODAL ──────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 200;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-sheet {
+      width: 100%;
+      max-width: 600px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      padding: 20px 24px 32px;
+      transform: translateY(100%);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+    .modal-handle {
+      width: 36px; height: 4px;
+      background: var(--border2);
+      border-radius: 2px;
+      margin: 0 auto 16px;
+    }
+    .modal-type-stripe {
+      height: 3px;
+      border-radius: 2px;
+      margin-bottom: 16px;
+    }
+    .modal-time {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .modal-title {
+      font-family: var(--display);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .modal-subtitle {
+      font-family: var(--display);
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .modal-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      padding: 3px 8px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .modal-meta {
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .modal-meta-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .modal-meta-key {
+      font-family: var(--mono);
+      font-size: 8px;
+      color: var(--text-dim);
+      width: 70px;
+      flex-shrink: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .modal-meta-val {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      width: 28px; height: 28px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 50%;
+      color: var(--text-muted);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
+      font-family: var(--mono);
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--text-muted); }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    .apex-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .apex-footer span {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--border2);
+      letter-spacing: 0.04em;
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 767px) {
+      .desktop-grid { display: none; }
+      .legend { display: none; }
+      .week-summary { display: none; }
+      .mobile-view { display: block; }
+      .apex-header { padding: 14px 16px 12px; }
+      .apex-header .app-title { font-size: 18px; }
+      .apex-footer { padding: 8px 16px; }
+    }
+
+    @media (min-width: 768px) {
+      .mobile-view { display: none !important; }
+    }
+
+    /* ─── UTILITY ────────────────────────────────────────── */
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════════════════ HEADER -->
+  <header class="apex-header">
+    <div class="institution">University of Ghana &middot; School of Engineering Sciences &middot; CPEN</div>
+    <div class="app-title">APEX &mdash; <span class="accent">Semester OS</span></div>
+    <div class="subtitle">Level 200 &nbsp;&middot;&nbsp; Sem 2 &nbsp;&middot;&nbsp; 2025/2026</div>
+    <hr class="header-sep" />
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════ LEGEND -->
+  <div class="legend" role="complementary" aria-label="Block type legend">
+    <span class="legend-label">Legend:</span>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--lecture-border)"></div>Lecture</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--lab-border)"></div>Lab / Tutorial</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--backend-border)"></div>Backend</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ml-border)"></div>ML</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--robotics-border)"></div>Robotics</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--study-border)"></div>Study</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--group-border)"></div>Group</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--review-border)"></div>Review / Rest</div>
+  </div>
+
+  <main class="main-content">
+
+    <!-- ═══════════════════════════════════════════════════ WEEK SUMMARY -->
+    <div class="week-summary" id="weekSummary" role="region" aria-label="Week summary"></div>
+
+    <!-- ═══════════════════════════════════════════════════ DESKTOP GRID -->
+    <div class="desktop-grid" id="desktopGrid" role="region" aria-label="Timetable grid">
+      <!-- Time axis -->
+      <div class="time-axis" id="timeAxis" aria-hidden="true"></div>
+      <!-- Day columns -->
+      <div class="days-container" id="daysContainer"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ MOBILE VIEW -->
+    <div class="mobile-view" id="mobileView">
+      <div class="day-tabs" id="dayTabs" role="tablist" aria-label="Day selector"></div>
+      <div id="mobileNowBanner" class="mobile-now-banner" aria-live="polite"></div>
+      <div id="dayViews"></div>
+    </div>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════ FOOTER -->
+  <footer class="apex-footer">
+    <span>APEX &middot; Romel Lartey &middot; 2025/2026</span>
+    <span>github.com/iamromelalvin7</span>
+  </footer>
+
+</div><!-- #app -->
+
+<!-- ═══════════════════════════════════════════════════════════ MODAL -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-sheet" style="position:relative;">
+    <button class="modal-close" id="modalClose" aria-label="Close detail panel">&times;</button>
+    <div class="modal-handle"></div>
+    <div class="modal-type-stripe" id="modalStripe"></div>
+    <div class="modal-time" id="modalTime"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-subtitle" id="modalSubtitle"></div>
+    <div class="modal-tag" id="modalTag"></div>
+    <div class="modal-meta" id="modalMeta"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════
+// SERVICE WORKER REGISTRATION
+// ══════════════════════════════════════════════════════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// TIMETABLE DATA
+// NOTE: Variable named "blockTop" intentionally — avoid `top` (clashes with window.top)
+// ══════════════════════════════════════════════════════════════════════
+const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+const DAY_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+// JS getDay(): 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+const JS_DAY_MAP = [6, 0, 1, 2, 3, 4, 5]; // maps JS day index to our 0-6 array
+
+const TIMETABLE = [
+  // ── MONDAY (index 0)
+  [
+    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 208',          subtitle:'Software Engineering · SF-F2',                        tag:'LECTURE' },
+    { start:'10:30', end:'12:25', type:'lab',      title:'CPEN 204 LAB',      subtitle:'Data Structures & Algorithms · Huawei Lab',           tag:'LAB' },
+    { start:'12:30', end:'13:25', type:'lecture',  title:'SENG 202',          subtitle:'Differential Equations · JQB 09',                    tag:'LECTURE' },
+    { start:'14:00', end:'16:00', type:'group',    title:'Study Group',       subtitle:'Post-lecture session',                                tag:'2HRS' },
+    { start:'17:00', end:'18:30', type:'robotics', title:'Arduino Bootcamp',  subtitle:'Evening session · TBD',                              tag:'EMBEDDED' },
+    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review ×3', subtitle:'CPEN 208 · CPEN 204 · SENG 202 — 20min each',        tag:'REVIEW' },
+    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Primary build window',                              tag:'2HRS' },
+  ],
+  // ── TUESDAY (index 1)
+  [
+    { start:'07:30', end:'08:25', type:'lecture',  title:'CPEN 212',          subtitle:'Data Communications · SF-F2',                        tag:'LECTURE' },
+    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 204',          subtitle:'Data Structures & Algorithms · EW-S2',               tag:'LECTURE' },
+    { start:'12:30', end:'15:25', type:'lab',      title:'CPEN 208 LAB',      subtitle:'Software Engineering · Huawei Lab',                  tag:'LAB' },
+    { start:'15:30', end:'16:25', type:'lab',      title:'SENG 202 TUT',      subtitle:'Differential Equations · NNB1',                      tag:'TUTORIAL' },
+    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review ×3', subtitle:'CPEN 212 · CPEN 204 · CPEN 208 — 20min each',        tag:'REVIEW' },
+    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Heaviest day. Protect this.',                       tag:'2HRS' },
+  ],
+  // ── WEDNESDAY (index 2)
+  // ⚠️ CPEN 202 ends 09:25 (not 10:25)
+  // ⚠️ CPEN 206 LAB ends 17:25, ML Meeting starts 17:30 — back-to-back
+  [
+    { start:'08:30', end:'09:25', type:'lecture',  title:'CPEN 202',          subtitle:'Computer Systems Design · SF-F2',                    tag:'LECTURE' },
+    { start:'09:30', end:'10:25', type:'lecture',  title:'CBAS 210',          subtitle:'Academic Writing II · JQB 22',                       tag:'LECTURE' },
+    { start:'12:30', end:'15:25', type:'lab',      title:'CPEN 212 LAB',      subtitle:'Data Communications · Electronics Lab',              tag:'LAB' },
+    { start:'15:30', end:'17:25', type:'lab',      title:'CPEN 206 LAB',      subtitle:'Linear Circuits · Electronics Lab',                  tag:'LAB' },
+    { start:'17:30', end:'19:00', type:'ml',       title:'ML Meeting',        subtitle:'Google ML Course — meets after CPEN 206 LAB',        tag:'MEETING' },
+    { start:'19:15', end:'20:00', type:'study',    title:'Lecture Review ×2', subtitle:'CPEN 202 · CBAS 210 — 20min each',                  tag:'REVIEW' },
+    { start:'20:00', end:'22:00', type:'ml',       title:'ML Consolidation',  subtitle:'NotebookLM · Quiz gaps · Review',                   tag:'NOTEBOOKLM' },
+  ],
+  // ── THURSDAY (index 3)
+  [
+    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 206',          subtitle:'Linear Circuits · WW-S3',                           tag:'LECTURE' },
+    { start:'10:30', end:'12:25', type:'lab',      title:'SENG 202 LAB',      subtitle:'Differential Equations · JQB 14',                   tag:'LAB' },
+    { start:'12:30', end:'15:25', type:'lab',      title:'CPEN 202 LAB',      subtitle:'Computer Systems Design · Electronics Lab',         tag:'LAB' },
+    { start:'16:00', end:'18:00', type:'group',    title:'Study Group',       subtitle:'Post-lecture session',                              tag:'2HRS' },
+    { start:'18:30', end:'19:30', type:'robotics', title:'Arduino Bootcamp',  subtitle:'Evening session · TBD',                             tag:'EMBEDDED' },
+    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review ×2', subtitle:'CPEN 206 · SENG 202 — 20min each',                  tag:'REVIEW' },
+    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Biggest session of the week',                      tag:'2HRS' },
+  ],
+  // ── FRIDAY (index 4)
+  [
+    { start:'09:00', end:'11:00', type:'backend',  title:'Backend — Morning', subtitle:'No lectures. Fresh mind.',                          tag:'2HRS' },
+    { start:'12:00', end:'14:00', type:'group',    title:'Study Group',       subtitle:'Time TBC',                                          tag:'TBC' },
+    { start:'14:30', end:'15:30', type:'robotics', title:'ESP32 — Competition Prep', subtitle:'Robotics · Daily reps',                     tag:'COMP' },
+    { start:'17:30', end:'19:00', type:'ml',       title:'ML Meeting',        subtitle:'Google ML Course',                                  tag:'MEETING' },
+    { start:'20:00', end:'22:00', type:'ml',       title:'ML Consolidation',  subtitle:'NotebookLM · Apply to backend',                    tag:'NOTEBOOKLM' },
+  ],
+  // ── SATURDAY (index 5)
+  // ⚠️ Arduino Bootcamp (13:30–14:30) overlaps Personal Study (14:00–17:00) — show bootcamp ending 14:00
+  [
+    { start:'10:00', end:'13:00', type:'backend',  title:'Backend Sprint',    subtitle:'SACRED — nothing moves this',                       tag:'SACRED', sacred: true },
+    { start:'13:30', end:'14:00', type:'robotics', title:'Arduino Bootcamp',  subtitle:'TBD — shifts if sprint conflicts (TBD)',             tag:'EMBEDDED' },
+    { start:'14:00', end:'17:00', type:'study',    title:'Personal Study',    subtitle:'Past questions · CPEN 204 + SENG 202 priority',     tag:'3HRS' },
+    { start:'17:30', end:'18:30', type:'ml',       title:'ML Self-Study',     subtitle:'NumPy · Pandas · Course materials',                 tag:'SELF' },
+    { start:'19:00', end:'23:00', type:'review',   title:'Rest',              subtitle:'—',                                                 tag:'—' },
+  ],
+  // ── SUNDAY (index 6)
+  [
+    { start:'10:00', end:'13:00', type:'study',    title:'Personal Study',    subtitle:'Remaining subjects · Weak areas from the week',     tag:'3HRS' },
+    { start:'14:00', end:'16:00', type:'backend',  title:'Backend — Weekend 2',subtitle:'Overflow · Debug · GitHub push',                  tag:'2HRS' },
+    { start:'20:00', end:'21:00', type:'review',   title:'Weekly Review',     subtitle:'What shipped vs planned? GPA risks?',               tag:'REVIEW' },
+    { start:'21:00', end:'22:00', type:'review',   title:'Next Week Plan',    subtitle:'One backend target · One study focus',              tag:'PLAN' },
+    { start:'22:00', end:'23:00', type:'review',   title:'Rest',              subtitle:'—',                                                 tag:'—' },
+  ],
+];
+
+// ══════════════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════════════
+const PX_PER_MIN  = 1.4;
+const START_MIN   = 420;   // 07:00
+
+function timeToMin(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function minToBlockTop(min) {
+  return (min - START_MIN) * PX_PER_MIN;
+}
+
+function blockHeight(startStr, endStr) {
+  return (timeToMin(endStr) - timeToMin(startStr)) * PX_PER_MIN;
+}
+
+function formatRange(start, end) {
+  return `${start} – ${end}`;
+}
+
+function durationLabel(start, end) {
+  const mins = timeToMin(end) - timeToMin(start);
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return h > 0 ? (m > 0 ? `${h}h ${m}m` : `${h}h`) : `${m}m`;
+}
+
+// Type color border for modal stripe
+const TYPE_COLORS = {
+  lecture: '#1565c0', lab: '#6a1b9a', backend: '#2e7d32',
+  ml: '#e65100', robotics: '#bf360c', study: '#880e4f',
+  group: '#00695c', review: '#333'
+};
+
+// University vs personal classification
+function isUni(type) {
+  return type === 'lecture' || type === 'lab';
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// CURRENT DAY/TIME
+// ══════════════════════════════════════════════════════════════════════
+function getTodayIndex() {
+  const jsDay = new Date().getDay(); // 0=Sun
+  return JS_DAY_MAP[jsDay];
+}
+
+function getCurrentMinutes() {
+  const now = new Date();
+  return now.getHours() * 60 + now.getMinutes();
+}
+
+function formatTime(min) {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════════════════════════════
+const modalOverlay = document.getElementById('modalOverlay');
+const modalClose   = document.getElementById('modalClose');
+
+function openModal(block) {
+  document.getElementById('modalTime').textContent     = formatRange(block.start, block.end);
+  document.getElementById('modalTitle').textContent    = block.title;
+  document.getElementById('modalSubtitle').textContent = block.subtitle;
+  const tagEl = document.getElementById('modalTag');
+  tagEl.textContent  = block.sacred ? '⬡ SACRED' : block.tag;
+  tagEl.className    = `modal-tag ${block.type}`;
+  tagEl.style.background = block.sacred ? '#0a2010' : '';
+  tagEl.style.color      = block.sacred ? '#4caf50' : '';
+
+  document.getElementById('modalStripe').style.background =
+    block.sacred ? '#4caf50' : (TYPE_COLORS[block.type] || '#333');
+
+  const dur = durationLabel(block.start, block.end);
+  const dayIdx = block._dayIdx !== undefined ? block._dayIdx : '';
+  document.getElementById('modalMeta').innerHTML = `
+    <div class="modal-meta-row"><span class="modal-meta-key">Type</span><span class="modal-meta-val">${block.type.charAt(0).toUpperCase()+block.type.slice(1)}</span></div>
+    <div class="modal-meta-row"><span class="modal-meta-key">Duration</span><span class="modal-meta-val">${dur}</span></div>
+    <div class="modal-meta-row"><span class="modal-meta-key">Tag</span><span class="modal-meta-val">${block.tag}</span></div>
+    ${dayIdx !== '' ? `<div class="modal-meta-row"><span class="modal-meta-key">Day</span><span class="modal-meta-val">${DAY_FULL[dayIdx]}</span></div>` : ''}
+  `;
+
+  modalOverlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  modalOverlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+modalClose.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// ══════════════════════════════════════════════════════════════════════
+// BUILD TIME AXIS
+// ══════════════════════════════════════════════════════════════════════
+function buildTimeAxis() {
+  const axis = document.getElementById('timeAxis');
+  axis.style.height = `${960 * PX_PER_MIN}px`;
+  for (let h = 7; h <= 23; h++) {
+    const minFromStart = (h * 60) - START_MIN;
+    const blockTop = minFromStart * PX_PER_MIN;
+    const tick = document.createElement('div');
+    tick.className = 'time-tick';
+    tick.style.top = `${blockTop}px`;
+    tick.innerHTML = `<span>${String(h).padStart(2,'0')}:00</span>`;
+    axis.appendChild(tick);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// BUILD DESKTOP GRID
+// ══════════════════════════════════════════════════════════════════════
+function buildDesktopGrid() {
+  const container = document.getElementById('daysContainer');
+  const todayIdx  = getTodayIndex();
+
+  DAYS.forEach((dayName, dayIdx) => {
+    const col = document.createElement('div');
+    col.className = 'day-col';
+    col.id = `desktop-col-${dayIdx}`;
+
+    // Header
+    const hdr = document.createElement('div');
+    hdr.className = 'day-col-header';
+    const isToday = dayIdx === todayIdx;
+    hdr.innerHTML = `
+      <div class="day-name ${isToday ? 'today-col' : ''}">${dayName}${isToday ? ' ◆' : ''}</div>
+    `;
+    col.appendChild(hdr);
+
+    // Hour guide lines
+    for (let h = 7; h <= 23; h++) {
+      const minOffset = (h * 60) - START_MIN;
+      const blockTop = minOffset * PX_PER_MIN;
+      const line = document.createElement('div');
+      line.className = 'hour-line';
+      line.style.top = `${blockTop}px`;
+      col.appendChild(line);
+    }
+
+    // Blocks
+    TIMETABLE[dayIdx].forEach((blk, i) => {
+      blk._dayIdx = dayIdx;
+      const blockTop = minToBlockTop(timeToMin(blk.start));
+      const bh = blockHeight(blk.start, blk.end);
+
+      const el = document.createElement('div');
+      el.className = `block ${blk.type}${blk.sacred ? ' sacred' : ''}`;
+      el.style.top    = `${blockTop}px`;
+      el.style.height = `${bh}px`;
+      el.setAttribute('role', 'button');
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('aria-label', `${blk.title} ${formatRange(blk.start, blk.end)}`);
+
+      const showSubtitle = bh >= 34;
+      const showTag      = bh >= 46;
+      const showTime     = bh >= 22;
+
+      el.innerHTML = `
+        ${showTime ? `<div class="block-time">${formatRange(blk.start, blk.end)}</div>` : ''}
+        <div class="block-title">${blk.title}</div>
+        ${showSubtitle ? `<div class="block-subtitle">${blk.subtitle}</div>` : ''}
+        ${showTag ? `<div class="block-tag ${blk.type}">${blk.sacred ? '<span class="sacred-tag">⬡ SACRED</span>' : blk.tag}</div>` : ''}
+      `;
+
+      el.addEventListener('click',  () => openModal(blk));
+      el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(blk); } });
+
+      col.appendChild(el);
+    });
+
+    // Current time line (only for today's column)
+    if (isToday) {
+      const nowLine = document.createElement('div');
+      nowLine.className = 'time-now-line';
+      nowLine.id = 'desktopNowLine';
+      col.appendChild(nowLine);
+
+      const nowDot = document.createElement('div');
+      nowDot.className = 'time-now-dot';
+      nowLine.appendChild(nowDot);
+    }
+
+    container.appendChild(col);
+  });
+
+  updateDesktopNowLine();
+}
+
+function updateDesktopNowLine() {
+  const line = document.getElementById('desktopNowLine');
+  if (!line) return;
+  const nowMin = getCurrentMinutes();
+  if (nowMin < START_MIN || nowMin > START_MIN + 960) {
+    line.style.display = 'none';
+    return;
+  }
+  const blockTop = (nowMin - START_MIN) * PX_PER_MIN;
+  line.style.top     = `${blockTop}px`;
+  line.style.display = 'block';
+  line.setAttribute('data-time', formatTime(nowMin));
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// BUILD MOBILE VIEW
+// ══════════════════════════════════════════════════════════════════════
+function buildMobileView() {
+  const tabsEl   = document.getElementById('dayTabs');
+  const viewsEl  = document.getElementById('dayViews');
+  const todayIdx = getTodayIndex();
+
+  DAYS.forEach((dayName, dayIdx) => {
+    // Tab
+    const tab = document.createElement('button');
+    tab.className = `day-tab${dayIdx === todayIdx ? ' active' : ''}`;
+    tab.textContent = dayName;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-selected', dayIdx === todayIdx ? 'true' : 'false');
+    tab.setAttribute('aria-controls', `mobile-day-${dayIdx}`);
+    tab.id = `tab-${dayIdx}`;
+    tab.addEventListener('click', () => switchMobileDay(dayIdx));
+    tabsEl.appendChild(tab);
+
+    // Day view
+    const view = document.createElement('div');
+    view.className = `day-view${dayIdx === todayIdx ? ' active' : ''}`;
+    view.id = `mobile-day-${dayIdx}`;
+    view.setAttribute('role', 'tabpanel');
+    view.setAttribute('aria-labelledby', `tab-${dayIdx}`);
+
+    TIMETABLE[dayIdx].forEach((blk) => {
+      blk._dayIdx = dayIdx;
+      const card = document.createElement('div');
+      card.className = `mobile-block ${blk.type}${blk.sacred ? ' sacred' : ''}`;
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', `${blk.title} ${formatRange(blk.start, blk.end)}`);
+
+      card.innerHTML = `
+        <div class="mb-time">${formatRange(blk.start, blk.end)}</div>
+        <div class="mb-title">${blk.title}</div>
+        <div class="mb-subtitle">${blk.subtitle}</div>
+        <span class="mb-tag ${blk.sacred ? 'sacred' : blk.type}">${blk.sacred ? '⬡ SACRED' : blk.tag}</span>
+      `;
+
+      card.addEventListener('click',   () => openModal(blk));
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(blk); } });
+
+      view.appendChild(card);
+    });
+
+    viewsEl.appendChild(view);
+  });
+
+  updateMobileNowBanner(todayIdx);
+}
+
+function switchMobileDay(dayIdx) {
+  // Update tabs
+  document.querySelectorAll('.day-tab').forEach((t, i) => {
+    t.classList.toggle('active', i === dayIdx);
+    t.setAttribute('aria-selected', i === dayIdx ? 'true' : 'false');
+  });
+  // Update views
+  document.querySelectorAll('.day-view').forEach((v, i) => {
+    if (i === dayIdx) {
+      v.style.opacity = '0';
+      v.classList.add('active');
+      requestAnimationFrame(() => { v.style.opacity = '1'; });
+    } else {
+      v.classList.remove('active');
+    }
+  });
+  updateMobileNowBanner(dayIdx);
+}
+
+function updateMobileNowBanner(dayIdx) {
+  const banner   = document.getElementById('mobileNowBanner');
+  const todayIdx = getTodayIndex();
+  if (dayIdx === todayIdx) {
+    const nowMin = getCurrentMinutes();
+    if (nowMin >= START_MIN && nowMin <= START_MIN + 960) {
+      banner.textContent = `NOW — ${formatTime(nowMin)}`;
+      banner.classList.add('visible');
+      return;
+    }
+  }
+  banner.classList.remove('visible');
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// WEEK SUMMARY BAR
+// ══════════════════════════════════════════════════════════════════════
+function buildWeekSummary() {
+  const bar      = document.getElementById('weekSummary');
+  const todayIdx = getTodayIndex();
+
+  DAYS.forEach((dayName, dayIdx) => {
+    const blocks   = TIMETABLE[dayIdx];
+    const uniCount = blocks.filter(b => isUni(b.type)).length;
+    const perCount = blocks.filter(b => !isUni(b.type)).length;
+
+    // Find dominant personal type
+    const typeCounts = {};
+    blocks.filter(b => !isUni(b.type)).forEach(b => { typeCounts[b.type] = (typeCounts[b.type]||0)+1; });
+    const dominant = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1])[0];
+    const dotColor = dominant ? TYPE_COLORS[dominant[0]] : 'transparent';
+
+    const card = document.createElement('div');
+    card.className = `day-summary-card${dayIdx === todayIdx ? ' today' : ''}`;
+    card.innerHTML = `
+      <div class="ds-name">${dayName}</div>
+      <div class="ds-counts">
+        ${uniCount > 0 ? `<span class="ds-chip uni">${uniCount}</span>` : ''}
+        ${perCount > 0 ? `<span class="ds-chip personal">${perCount}</span>` : ''}
+        ${dominant ? `<span class="ds-chip dot" style="background:${dotColor}22;border:1px solid ${dotColor}"></span>` : ''}
+      </div>
+    `;
+    bar.appendChild(card);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════
+(function init() {
+  buildTimeAxis();
+  buildDesktopGrid();
+  buildMobileView();
+  buildWeekSummary();
+
+  // Update time every 60s
+  setInterval(() => {
+    updateDesktopNowLine();
+    const todayIdx = getTodayIndex();
+    updateMobileNowBanner(todayIdx);
+  }, 60000);
+})();
+</script>
+</body>
+</html>
