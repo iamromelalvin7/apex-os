@@ -99,6 +99,46 @@
       border-top: 1px solid var(--border);
     }
 
+    /* ─── VIEW NAV TABS ──────────────────────────────────── */
+    .view-nav {
+      display: flex;
+      gap: 0;
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      align-items: center;
+    }
+    .view-nav-pill {
+      display: flex;
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .view-nav-btn {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      background: var(--surface2);
+      color: var(--text-muted);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .view-nav-btn.active {
+      color: var(--accent);
+      background: #0a2010;
+    }
+    .view-nav-btn:hover:not(.active) {
+      color: var(--text);
+      background: var(--surface);
+    }
+    .view-nav-btn svg { width: 11px; height: 11px; }
+
     /* ─── LEGEND ─────────────────────────────────────────── */
     .legend {
       padding: 10px 24px;
@@ -135,6 +175,208 @@
 
     /* ─── MAIN CONTENT ───────────────────────────────────── */
     .main-content { flex: 1; overflow: hidden; }
+
+    /* ═══════════════════════════════════════════════════════
+       NOW VIEW
+    ═══════════════════════════════════════════════════════ */
+    #nowView {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 24px;
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    #nowView.hidden { display: none; }
+
+    .now-live-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .now-live-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    /* Active block card */
+    .now-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .now-card-accent-strip {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      border-radius: 8px 0 0 8px;
+    }
+    .now-card-inner { padding-left: 4px; }
+    .now-category-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .now-category-pill svg { width: 10px; height: 10px; }
+
+    .now-title {
+      font-family: var(--display);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 5px;
+    }
+    .now-subtitle {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .now-time-range {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .now-time-range svg { color: var(--text-muted); width: 13px; height: 13px; }
+
+    /* Progress bar */
+    .now-progress-bar-wrap {
+      height: 4px;
+      background: var(--border2);
+      border-radius: 2px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .now-progress-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--accent);
+      transition: width 0.8s ease;
+    }
+    .now-progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    /* Sacred treatment in NOW view */
+    .now-card.sacred-card {
+      border-color: #4caf50;
+      box-shadow: 0 0 0 1px rgba(76,175,80,0.2);
+    }
+    .sacred-now-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #4caf50;
+      background: #0a2010;
+      border: 1px solid #4caf5055;
+      border-radius: 20px;
+      padding: 3px 9px;
+      margin-left: 8px;
+    }
+    .sacred-now-badge svg { width: 9px; height: 9px; }
+
+    /* No-active-block state */
+    .now-free-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px 24px;
+    }
+    .now-free-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .now-free-time {
+      font-family: var(--mono);
+      font-size: 22px;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+    .now-next-label {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .now-next-title {
+      font-family: var(--display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .now-next-sub {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .now-timetable-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-top: 2px;
+    }
+    .now-timetable-btn:hover {
+      color: var(--text);
+      border-color: var(--border2);
+      background: var(--surface);
+    }
+    .now-timetable-btn svg { width: 12px; height: 12px; }
 
     /* ─── WEEK SUMMARY BAR ───────────────────────────────── */
     .week-summary {
@@ -186,11 +428,44 @@
       align-self: center;
     }
 
+    /* ─── TIMETABLE MODE TOGGLE ──────────────────────────── */
+    .timetable-controls {
+      padding: 10px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .mode-toggle {
+      display: flex;
+      border: 1px solid var(--border2);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .mode-btn {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      background: var(--surface2);
+      color: var(--text-muted);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .mode-btn.active {
+      color: var(--accent);
+      background: #0a2010;
+    }
+    .mode-btn:hover:not(.active) { color: var(--text); background: var(--surface); }
+
     /* ─── DESKTOP GRID ───────────────────────────────────── */
     .desktop-grid {
       display: flex;
       overflow: auto;
-      height: calc(100vh - 210px);
+      height: calc(100vh - 260px);
       background: var(--bg);
     }
     .time-axis {
@@ -254,8 +529,20 @@
       letter-spacing: 0.12em;
       color: var(--text-muted);
       text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
     }
     .day-col-header .day-name.today-col { color: var(--accent); }
+    .today-diamond {
+      width: 6px; height: 6px;
+      display: inline-block;
+      background: var(--accent);
+      transform: rotate(45deg);
+      border-radius: 1px;
+      flex-shrink: 0;
+    }
     .day-col-header .day-date {
       font-family: var(--mono);
       font-size: 7px;
@@ -291,6 +578,15 @@
     }
     .block:active { transform: scale(0.98); }
 
+    /* Active block pulse — left border only */
+    .block.block-active {
+      animation: active-border-pulse 2s ease-in-out infinite;
+    }
+    @keyframes active-border-pulse {
+      0%, 100% { border-left-width: 2px; border-left-color: currentColor; }
+      50% { border-left-width: 3px; filter: brightness(1.3); }
+    }
+
     .block-time {
       font-family: var(--mono);
       font-size: 7px;
@@ -298,6 +594,17 @@
       white-space: nowrap;
       overflow: hidden;
       line-height: 1.3;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .live-dot {
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      animation: pulse-dot 1.5s ease-in-out infinite;
     }
     .block-title {
       font-family: var(--display);
@@ -352,14 +659,18 @@
     .block.sacred {
       border: 1px solid #4caf50 !important;
       border-left: 3px solid #4caf50 !important;
-      box-shadow: 0 0 8px #4caf5022;
+      box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.2);
     }
     .sacred-tag {
       color: #4caf50 !important;
       font-family: var(--mono);
       font-size: 6px;
       font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
     }
+    .sacred-tag svg { width: 7px; height: 7px; }
 
     /* ─── CURRENT TIME LINE ──────────────────────────────── */
     .time-now-line {
@@ -418,11 +729,24 @@
       color: var(--text-muted);
       cursor: pointer;
       transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .day-tab .tab-count {
+      font-size: 7px;
+      background: var(--border2);
+      border-radius: 10px;
+      padding: 1px 4px;
     }
     .day-tab.active {
       color: var(--accent);
       background: #0a2010;
       border-color: var(--accent);
+    }
+    .day-tab.active .tab-count {
+      background: #0f3018;
+      color: var(--accent);
     }
     .day-tab:hover:not(.active) {
       color: var(--text);
@@ -440,8 +764,11 @@
       color: var(--accent);
       letter-spacing: 0.08em;
       display: none;
+      align-items: center;
+      gap: 6px;
     }
-    .mobile-now-banner.visible { display: block; }
+    .mobile-now-banner.visible { display: flex; }
+    .mobile-now-banner svg { width: 11px; height: 11px; }
 
     .day-view {
       display: none;
@@ -477,7 +804,16 @@
 
     .mobile-block.sacred {
       border-left: 16px solid #4caf50 !important;
-      box-shadow: 0 0 12px #4caf5022;
+      box-shadow: 0 0 0 1px rgba(76, 175, 80, 0.2);
+    }
+
+    /* Active mobile block */
+    .mobile-block.block-active {
+      animation: mobile-active-pulse 2s ease-in-out infinite;
+    }
+    @keyframes mobile-active-pulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.2); }
     }
 
     .mb-time {
@@ -485,6 +821,9 @@
       font-size: 9px;
       color: var(--text-muted);
       margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
     .mb-title {
       font-family: var(--display);
@@ -500,7 +839,9 @@
       margin-bottom: 4px;
     }
     .mb-tag {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       font-family: var(--mono);
       font-size: 8px;
       letter-spacing: 0.06em;
@@ -508,6 +849,7 @@
       border-radius: 3px;
       text-transform: uppercase;
     }
+    .mb-tag svg { width: 8px; height: 8px; }
     .mb-tag.lecture  { background: #0d2137; color: var(--lecture-text); }
     .mb-tag.lab      { background: #1a0e30; color: var(--lab-text); }
     .mb-tag.backend  { background: #082215; color: var(--backend-text); }
@@ -578,7 +920,9 @@
       margin-bottom: 14px;
     }
     .modal-tag {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       font-family: var(--mono);
       font-size: 9px;
       letter-spacing: 0.08em;
@@ -587,6 +931,7 @@
       text-transform: uppercase;
       margin-bottom: 16px;
     }
+    .modal-tag svg { width: 10px; height: 10px; }
     .modal-meta {
       border-top: 1px solid var(--border);
       padding-top: 14px;
@@ -629,6 +974,42 @@
     }
     .modal-close:hover { color: var(--text); border-color: var(--text-muted); }
 
+    /* ─── FLOATING NOW BUTTON ────────────────────────────── */
+    #floatingNowBtn {
+      position: fixed;
+      bottom: 24px;
+      right: 20px;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: #0a2010;
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      padding: 8px 14px;
+      cursor: pointer;
+      z-index: 90;
+      box-shadow: 0 4px 16px rgba(76,175,80,0.15);
+      transition: all 0.15s ease;
+    }
+    #floatingNowBtn.visible { display: flex; }
+    #floatingNowBtn:hover {
+      background: #0f3018;
+      box-shadow: 0 4px 20px rgba(76,175,80,0.25);
+    }
+    #floatingNowBtn svg { width: 12px; height: 12px; }
+    @media (min-width: 768px) {
+      #floatingNowBtn {
+        bottom: auto;
+        top: 70px;
+        right: 20px;
+      }
+    }
+
     /* ─── FOOTER ─────────────────────────────────────────── */
     .apex-footer {
       display: flex;
@@ -650,10 +1031,13 @@
       .desktop-grid { display: none; }
       .legend { display: none; }
       .week-summary { display: none; }
+      .timetable-controls { display: none; }
       .mobile-view { display: block; }
       .apex-header { padding: 14px 16px 12px; }
       .apex-header .app-title { font-size: 18px; }
       .apex-footer { padding: 8px 16px; }
+      .view-nav { padding: 8px 16px; }
+      #nowView { padding: 16px; }
     }
 
     @media (min-width: 768px) {
@@ -662,6 +1046,7 @@
 
     /* ─── UTILITY ────────────────────────────────────────── */
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -675,8 +1060,28 @@
     <hr class="header-sep" />
   </header>
 
+  <!-- ═══════════════════════════════════════════════════════ VIEW NAV -->
+  <div class="view-nav">
+    <div class="view-nav-pill">
+      <button class="view-nav-btn active" id="navNow" onclick="switchView('now')" aria-label="Now view">
+        <!-- Lucide Radio icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+        </svg>
+        NOW
+      </button>
+      <button class="view-nav-btn" id="navTimetable" onclick="switchView('timetable')" aria-label="Timetable view">
+        <!-- Lucide Calendar icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        TIMETABLE
+      </button>
+    </div>
+  </div>
+
   <!-- ═══════════════════════════════════════════════════════ LEGEND -->
-  <div class="legend" role="complementary" aria-label="Block type legend">
+  <div class="legend" id="legendBar" role="complementary" aria-label="Block type legend">
     <span class="legend-label">Legend:</span>
     <div class="legend-item"><div class="legend-dot" style="background:var(--lecture-border)"></div>Lecture</div>
     <div class="legend-item"><div class="legend-dot" style="background:var(--lab-border)"></div>Lab / Tutorial</div>
@@ -690,23 +1095,44 @@
 
   <main class="main-content">
 
-    <!-- ═══════════════════════════════════════════════════ WEEK SUMMARY -->
-    <div class="week-summary" id="weekSummary" role="region" aria-label="Week summary"></div>
+    <!-- ═══════════════════════════════════════════════════ NOW VIEW -->
+    <section id="nowView" aria-label="Now view">
+      <!-- populated by renderNowView() -->
+    </section>
 
-    <!-- ═══════════════════════════════════════════════════ DESKTOP GRID -->
-    <div class="desktop-grid" id="desktopGrid" role="region" aria-label="Timetable grid">
-      <!-- Time axis -->
-      <div class="time-axis" id="timeAxis" aria-hidden="true"></div>
-      <!-- Day columns -->
-      <div class="days-container" id="daysContainer"></div>
-    </div>
+    <!-- ═══════════════════════════════════════════════════ TIMETABLE SECTION -->
+    <div id="timetableSection" class="hidden">
 
-    <!-- ═══════════════════════════════════════════════════ MOBILE VIEW -->
-    <div class="mobile-view" id="mobileView">
-      <div class="day-tabs" id="dayTabs" role="tablist" aria-label="Day selector"></div>
-      <div id="mobileNowBanner" class="mobile-now-banner" aria-live="polite"></div>
-      <div id="dayViews"></div>
-    </div>
+      <!-- ── WEEK SUMMARY BAR ── -->
+      <div class="week-summary" id="weekSummary" role="region" aria-label="Week summary"></div>
+
+      <!-- ── MODE TOGGLE ── -->
+      <div class="timetable-controls">
+        <div class="mode-toggle" role="group" aria-label="Schedule mode">
+          <button class="mode-btn active" id="modeUniversity" onclick="setTimetableMode('university')">University</button>
+          <button class="mode-btn" id="modeFullWeek" onclick="setTimetableMode('fullweek')">Full Week</button>
+        </div>
+      </div>
+
+      <!-- ── DESKTOP GRID ── -->
+      <div class="desktop-grid" id="desktopGrid" role="region" aria-label="Timetable grid">
+        <div class="time-axis" id="timeAxis" aria-hidden="true"></div>
+        <div class="days-container" id="daysContainer"></div>
+      </div>
+
+      <!-- ── MOBILE VIEW ── -->
+      <div class="mobile-view" id="mobileView">
+        <div class="day-tabs" id="dayTabs" role="tablist" aria-label="Day selector"></div>
+        <div id="mobileNowBanner" class="mobile-now-banner" aria-live="polite">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49"/>
+          </svg>
+          <span id="mobileNowBannerText"></span>
+        </div>
+        <div id="dayViews"></div>
+      </div>
+
+    </div><!-- #timetableSection -->
 
   </main>
 
@@ -732,6 +1158,14 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════ FLOATING NOW BUTTON -->
+<button id="floatingNowBtn" aria-label="Go to NOW view" onclick="switchView('now')">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+  </svg>
+  NOW
+</button>
+
 <script>
 // ══════════════════════════════════════════════════════════════════════
 // SERVICE WORKER REGISTRATION
@@ -743,7 +1177,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // ══════════════════════════════════════════════════════════════════════
-// TIMETABLE DATA
+// TIMETABLE DATA — V2 corrected (from official UG timetable)
 // NOTE: Variable named "blockTop" intentionally — avoid `top` (clashes with window.top)
 // ══════════════════════════════════════════════════════════════════════
 const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
@@ -754,69 +1188,64 @@ const JS_DAY_MAP = [6, 0, 1, 2, 3, 4, 5]; // maps JS day index to our 0-6 array
 const TIMETABLE = [
   // ── MONDAY (index 0)
   [
-    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 208',          subtitle:'Software Engineering · SF-F2',                        tag:'LECTURE' },
-    { start:'10:30', end:'12:25', type:'lab',      title:'CPEN 204 LAB',      subtitle:'Data Structures & Algorithms · Huawei Lab',           tag:'LAB' },
-    { start:'12:30', end:'13:25', type:'lecture',  title:'SENG 202',          subtitle:'Differential Equations · JQB 09',                    tag:'LECTURE' },
-    { start:'14:00', end:'16:00', type:'group',    title:'Study Group',       subtitle:'Post-lecture session',                                tag:'2HRS' },
-    { start:'17:00', end:'18:30', type:'robotics', title:'Arduino Bootcamp',  subtitle:'Evening session · TBD',                              tag:'EMBEDDED' },
-    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review ×3', subtitle:'CPEN 208 · CPEN 204 · SENG 202 — 20min each',        tag:'REVIEW' },
-    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Primary build window',                              tag:'2HRS' },
+    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 208',           subtitle:'Software Engineering · SF-F2',                              tag:'LECTURE',  lecturer:'Mr. John Assiamah' },
+    { start:'10:30', end:'12:25', type:'lab',      title:'CPEN 208 LAB',       subtitle:'Software Engineering · Huawei Lab',                         tag:'LAB',      lecturer:'Mr. John Assiamah' },
+    { start:'12:30', end:'13:25', type:'lecture',  title:'SENG 202',           subtitle:'Differential Equations · JQB 09',                           tag:'LECTURE',  lecturer:'Dr. John Kutor' },
+    { start:'14:00', end:'16:00', type:'group',    title:'Study Group',        subtitle:'Post-lecture session',                                      tag:'2HRS',     lecturer:'' },
+    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review x3',  subtitle:'CPEN 208 · CPEN 208 LAB · SENG 202 — 20 min each',          tag:'REVIEW',   lecturer:'' },
+    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Primary build window',                                      tag:'2HRS',     lecturer:'' },
   ],
   // ── TUESDAY (index 1)
   [
-    { start:'07:30', end:'08:25', type:'lecture',  title:'CPEN 212',          subtitle:'Data Communications · SF-F2',                        tag:'LECTURE' },
-    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 204',          subtitle:'Data Structures & Algorithms · EW-S2',               tag:'LECTURE' },
-    { start:'12:30', end:'15:25', type:'lab',      title:'CPEN 208 LAB',      subtitle:'Software Engineering · Huawei Lab',                  tag:'LAB' },
-    { start:'15:30', end:'16:25', type:'lab',      title:'SENG 202 TUT',      subtitle:'Differential Equations · NNB1',                      tag:'TUTORIAL' },
-    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review ×3', subtitle:'CPEN 212 · CPEN 204 · CPEN 208 — 20min each',        tag:'REVIEW' },
-    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Heaviest day. Protect this.',                       tag:'2HRS' },
+    { start:'07:30', end:'08:25', type:'lecture',  title:'CPEN 212',           subtitle:'Data Communications · SF-F2',                               tag:'LECTURE',  lecturer:'Dr. Isaac Adjaye Aboagye' },
+    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 204',           subtitle:'Data Structures & Algorithms · EW-S2',                      tag:'LECTURE',  lecturer:'Mrs. Gifty Osei' },
+    { start:'11:30', end:'13:25', type:'lab',      title:'CPEN 204 LAB',       subtitle:'Data Structures & Algorithms · Huawei Lab',                 tag:'LAB',      lecturer:'Mrs. Gifty Osei' },
+    { start:'15:30', end:'16:25', type:'lab',      title:'SENG 202 TUT',       subtitle:'Differential Equations · NNB1',                             tag:'TUTORIAL', lecturer:'Dr. John Kutor' },
+    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review x3',  subtitle:'CPEN 212 · CPEN 204 · SENG 202 TUT — 20 min each',          tag:'REVIEW',   lecturer:'' },
+    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Heaviest day. Protect this window.',                        tag:'2HRS',     lecturer:'' },
   ],
   // ── WEDNESDAY (index 2)
-  // ⚠️ CPEN 202 ends 09:25 (not 10:25)
-  // ⚠️ CPEN 206 LAB ends 17:25, ML Meeting starts 17:30 — back-to-back
   [
-    { start:'08:30', end:'09:25', type:'lecture',  title:'CPEN 202',          subtitle:'Computer Systems Design · SF-F2',                    tag:'LECTURE' },
-    { start:'09:30', end:'10:25', type:'lecture',  title:'CBAS 210',          subtitle:'Academic Writing II · JQB 22',                       tag:'LECTURE' },
-    { start:'12:30', end:'15:25', type:'lab',      title:'CPEN 212 LAB',      subtitle:'Data Communications · Electronics Lab',              tag:'LAB' },
-    { start:'15:30', end:'17:25', type:'lab',      title:'CPEN 206 LAB',      subtitle:'Linear Circuits · Electronics Lab',                  tag:'LAB' },
-    { start:'17:30', end:'19:00', type:'ml',       title:'ML Meeting',        subtitle:'Google ML Course — meets after CPEN 206 LAB',        tag:'MEETING' },
-    { start:'19:15', end:'20:00', type:'study',    title:'Lecture Review ×2', subtitle:'CPEN 202 · CBAS 210 — 20min each',                  tag:'REVIEW' },
-    { start:'20:00', end:'22:00', type:'ml',       title:'ML Consolidation',  subtitle:'NotebookLM · Quiz gaps · Review',                   tag:'NOTEBOOKLM' },
+    { start:'08:30', end:'09:25', type:'lecture',  title:'CPEN 202',           subtitle:'Computer Systems Design · SF-F2',                           tag:'LECTURE',  lecturer:'Mr. Agyare Debra' },
+    { start:'09:30', end:'10:25', type:'lecture',  title:'CBAS 210',           subtitle:'Academic Writing II · JQB 22',                              tag:'LECTURE',  lecturer:'Dr. Magaret Ansah Richardson' },
+    { start:'11:30', end:'13:25', type:'lab',      title:'CPEN 212 LAB',       subtitle:'Data Communications · Electronics Lab',                     tag:'LAB',      lecturer:'Dr. Isaac Adjaye Aboagye' },
+    { start:'15:30', end:'16:25', type:'lab',      title:'CPEN 206 LAB',       subtitle:'Linear Circuits · Electronics Lab',                         tag:'LAB',      lecturer:'Dr. Percy Okae' },
+    { start:'19:30', end:'20:00', type:'study',    title:'Lecture Review x2',  subtitle:'CPEN 202 · CBAS 210 — 20 min each',                         tag:'REVIEW',   lecturer:'' },
+    { start:'20:00', end:'22:00', type:'ml',       title:'ML Consolidation',   subtitle:'NotebookLM · Quiz gaps · Review notes',                     tag:'NOTEBOOKLM', lecturer:'' },
   ],
   // ── THURSDAY (index 3)
   [
-    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 206',          subtitle:'Linear Circuits · WW-S3',                           tag:'LECTURE' },
-    { start:'10:30', end:'12:25', type:'lab',      title:'SENG 202 LAB',      subtitle:'Differential Equations · JQB 14',                   tag:'LAB' },
-    { start:'12:30', end:'15:25', type:'lab',      title:'CPEN 202 LAB',      subtitle:'Computer Systems Design · Electronics Lab',         tag:'LAB' },
-    { start:'16:00', end:'18:00', type:'group',    title:'Study Group',       subtitle:'Post-lecture session',                              tag:'2HRS' },
-    { start:'18:30', end:'19:30', type:'robotics', title:'Arduino Bootcamp',  subtitle:'Evening session · TBD',                             tag:'EMBEDDED' },
-    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review ×2', subtitle:'CPEN 206 · SENG 202 — 20min each',                  tag:'REVIEW' },
-    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Biggest session of the week',                      tag:'2HRS' },
+    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 206',           subtitle:'Linear Circuits · WW-S3',                                  tag:'LECTURE',  lecturer:'Dr. Percy Okae' },
+    { start:'10:30', end:'12:25', type:'lab',      title:'SENG 202 LAB',       subtitle:'Differential Equations · JQB 14',                          tag:'LAB',      lecturer:'Dr. John Kutor' },
+    { start:'14:00', end:'16:00', type:'group',    title:'Study Group',        subtitle:'Post-lecture session',                                     tag:'2HRS',     lecturer:'' },
+    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review x2',  subtitle:'CPEN 206 · SENG 202 LAB — 20 min each',                    tag:'REVIEW',   lecturer:'' },
+    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Biggest session of the week',                              tag:'2HRS',     lecturer:'' },
   ],
   // ── FRIDAY (index 4)
   [
-    { start:'09:00', end:'11:00', type:'backend',  title:'Backend — Morning', subtitle:'No lectures. Fresh mind.',                          tag:'2HRS' },
-    { start:'12:00', end:'14:00', type:'group',    title:'Study Group',       subtitle:'Time TBC',                                          tag:'TBC' },
-    { start:'14:30', end:'15:30', type:'robotics', title:'ESP32 — Competition Prep', subtitle:'Robotics · Daily reps',                     tag:'COMP' },
-    { start:'17:30', end:'19:00', type:'ml',       title:'ML Meeting',        subtitle:'Google ML Course',                                  tag:'MEETING' },
-    { start:'20:00', end:'22:00', type:'ml',       title:'ML Consolidation',  subtitle:'NotebookLM · Apply to backend',                    tag:'NOTEBOOKLM' },
+    { start:'09:00', end:'11:00', type:'backend',  title:'Backend — Morning Session', subtitle:'No lectures. Fresh mind. Best focus.',               tag:'2HRS',     lecturer:'' },
+    { start:'12:00', end:'14:00', type:'group',    title:'Study Group',        subtitle:'Time TBC',                                                 tag:'TBC',      lecturer:'' },
+    { start:'12:30', end:'15:25', type:'lab',      title:'CPEN 202 LAB',       subtitle:'Computer Systems Design · Electronics Lab',                 tag:'LAB',      lecturer:'Mr. Agyare Debra' },
+    { start:'14:30', end:'15:30', type:'robotics', title:'ESP32 — Competition Prep', subtitle:'Ghana Robotics Competition · Daily reps',             tag:'COMP',     lecturer:'' },
+    { start:'15:00', end:'17:00', type:'ml',       title:'ML Session',         subtitle:'Weekly meeting',                                           tag:'MEETING',  lecturer:'' },
+    { start:'20:00', end:'22:00', type:'ml',       title:'ML Consolidation',   subtitle:'NotebookLM · Apply to backend context',                    tag:'NOTEBOOKLM', lecturer:'' },
   ],
   // ── SATURDAY (index 5)
-  // ⚠️ Arduino Bootcamp (13:30–14:30) overlaps Personal Study (14:00–17:00) — show bootcamp ending 14:00
   [
-    { start:'10:00', end:'13:00', type:'backend',  title:'Backend Sprint',    subtitle:'SACRED — nothing moves this',                       tag:'SACRED', sacred: true },
-    { start:'13:30', end:'14:00', type:'robotics', title:'Arduino Bootcamp',  subtitle:'TBD — shifts if sprint conflicts (TBD)',             tag:'EMBEDDED' },
-    { start:'14:00', end:'17:00', type:'study',    title:'Personal Study',    subtitle:'Past questions · CPEN 204 + SENG 202 priority',     tag:'3HRS' },
-    { start:'17:30', end:'18:30', type:'ml',       title:'ML Self-Study',     subtitle:'NumPy · Pandas · Course materials',                 tag:'SELF' },
-    { start:'19:00', end:'23:00', type:'review',   title:'Rest',              subtitle:'—',                                                 tag:'—' },
+    { start:'10:00', end:'13:00', type:'backend',  title:'Backend Sprint',     subtitle:'SACRED — nothing moves this. Ever.',                        tag:'SACRED',   lecturer:'', sacred: true },
+    { start:'14:00', end:'17:00', type:'study',    title:'Personal Study',     subtitle:'Deep block · Past questions · CPEN 204 + SENG 202 priority', tag:'3HRS',    lecturer:'' },
+    { start:'15:00', end:'17:00', type:'ml',       title:'ML Session',         subtitle:'Weekly meeting',                                           tag:'MEETING',  lecturer:'' },
+    { start:'17:30', end:'18:30', type:'ml',       title:'ML Self-Study',      subtitle:'NumPy · Pandas · Course materials',                        tag:'SELF',     lecturer:'' },
+    { start:'19:30', end:'21:00', type:'robotics', title:'Arduino Bootcamp',   subtitle:'Evening session',                                          tag:'EMBEDDED', lecturer:'' },
+    { start:'21:00', end:'23:00', type:'review',   title:'Rest',               subtitle:'Earned. Take it fully.',                                   tag:'REST',     lecturer:'' },
   ],
   // ── SUNDAY (index 6)
   [
-    { start:'10:00', end:'13:00', type:'study',    title:'Personal Study',    subtitle:'Remaining subjects · Weak areas from the week',     tag:'3HRS' },
-    { start:'14:00', end:'16:00', type:'backend',  title:'Backend — Weekend 2',subtitle:'Overflow · Debug · GitHub push',                  tag:'2HRS' },
-    { start:'20:00', end:'21:00', type:'review',   title:'Weekly Review',     subtitle:'What shipped vs planned? GPA risks?',               tag:'REVIEW' },
-    { start:'21:00', end:'22:00', type:'review',   title:'Next Week Plan',    subtitle:'One backend target · One study focus',              tag:'PLAN' },
-    { start:'22:00', end:'23:00', type:'review',   title:'Rest',              subtitle:'—',                                                 tag:'—' },
+    { start:'10:00', end:'13:00', type:'study',    title:'Personal Study',     subtitle:'Remaining subjects · Weak areas from the week',             tag:'3HRS',     lecturer:'' },
+    { start:'14:00', end:'16:00', type:'backend',  title:'Backend — Weekend Session 2', subtitle:'Overflow · Debug · GitHub push',                  tag:'2HRS',     lecturer:'' },
+    { start:'19:30', end:'21:00', type:'robotics', title:'Arduino Bootcamp',   subtitle:'Evening session',                                          tag:'EMBEDDED', lecturer:'' },
+    { start:'20:00', end:'21:00', type:'review',   title:'Weekly Review',      subtitle:'What shipped vs planned? GPA risks?',                      tag:'REVIEW',   lecturer:'' },
+    { start:'21:00', end:'22:00', type:'review',   title:'Next Week Planning', subtitle:'One backend target · One subject focus',                   tag:'PLAN',     lecturer:'' },
   ],
 ];
 
@@ -857,13 +1286,40 @@ const TYPE_COLORS = {
   group: '#00695c', review: '#333'
 };
 
+// Category pill colors
+const CAT_PILL_STYLES = {
+  lecture:  { bg: '#0d2137', color: '#90caf9' },
+  lab:      { bg: '#1a0e30', color: '#ce93d8' },
+  backend:  { bg: '#082215', color: '#81c784' },
+  ml:       { bg: '#241700', color: '#ffcc80' },
+  robotics: { bg: '#240d00', color: '#ff8a65' },
+  study:    { bg: '#240c21', color: '#f48fb1' },
+  group:    { bg: '#00221a', color: '#80cbc4' },
+  review:   { bg: '#1a1a1a', color: '#888' },
+};
+
 // University vs personal classification
 function isUni(type) {
   return type === 'lecture' || type === 'lab';
 }
 
+// ── Category SVG icons (Lucide paths, inlined) ──
+const CAT_ICONS = {
+  lecture:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+  lab:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>`,
+  backend:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>`,
+  ml:       `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>`,
+  robotics: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/><circle cx="9" cy="13" r="1"/><circle cx="15" cy="13" r="1"/><path d="M9 17h6"/></svg>`,
+  study:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+  group:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  review:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`,
+};
+const SACRED_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+const ARROW_RIGHT_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+const CLOCK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
+
 // ══════════════════════════════════════════════════════════════════════
-// CURRENT DAY/TIME
+// CURRENT DAY/TIME HELPERS
 // ══════════════════════════════════════════════════════════════════════
 function getTodayIndex() {
   const jsDay = new Date().getDay(); // 0=Sun
@@ -881,6 +1337,194 @@ function formatTime(min) {
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
 }
 
+function formatCurrentTime() {
+  const now = new Date();
+  return `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// NOW VIEW LOGIC
+// ══════════════════════════════════════════════════════════════════════
+
+// Returns the active block for today, or null
+function getCurrentBlock() {
+  const todayIdx = getTodayIndex();
+  const nowMin   = getCurrentMinutes();
+  const blocks   = TIMETABLE[todayIdx];
+  for (const blk of blocks) {
+    if (timeToMin(blk.start) <= nowMin && nowMin < timeToMin(blk.end)) {
+      return { ...blk, _dayIdx: todayIdx };
+    }
+  }
+  return null;
+}
+
+// Returns the next block today, or first block of tomorrow
+function getNextBlock() {
+  const todayIdx = getTodayIndex();
+  const nowMin   = getCurrentMinutes();
+  const todayBlocks = TIMETABLE[todayIdx];
+
+  for (const blk of todayBlocks) {
+    if (timeToMin(blk.start) > nowMin) {
+      return { ...blk, _dayIdx: todayIdx, _isToday: true };
+    }
+  }
+
+  // First block of tomorrow
+  const tomorrowIdx = (todayIdx + 1) % 7;
+  const tomorrowBlocks = TIMETABLE[tomorrowIdx];
+  if (tomorrowBlocks.length > 0) {
+    return { ...tomorrowBlocks[0], _dayIdx: tomorrowIdx, _isToday: false };
+  }
+  return null;
+}
+
+// Returns 0–100 progress through current block
+function progressPercent(block) {
+  const nowMin   = getCurrentMinutes();
+  const start    = timeToMin(block.start);
+  const end      = timeToMin(block.end);
+  const total    = end - start;
+  const elapsed  = nowMin - start;
+  return Math.min(100, Math.max(0, Math.round((elapsed / total) * 100)));
+}
+
+// Minutes remaining until block ends
+function minutesRemaining(block) {
+  return timeToMin(block.end) - getCurrentMinutes();
+}
+
+// Minutes since block started
+function minutesSinceStart(block) {
+  return getCurrentMinutes() - timeToMin(block.start);
+}
+
+// How many minutes until block starts
+function minutesUntilStart(block) {
+  return timeToMin(block.start) - getCurrentMinutes();
+}
+
+function renderNowView() {
+  const container = document.getElementById('nowView');
+  const current   = getCurrentBlock();
+  const next      = getNextBlock();
+
+  let html = `<div class="now-live-label"><div class="now-live-dot"></div>Live · ${formatCurrentTime()}</div>`;
+
+  if (current) {
+    const pct      = progressPercent(current);
+    const minsLeft = minutesRemaining(current);
+    const minsSince = minutesSinceStart(current);
+    const pillStyle = CAT_PILL_STYLES[current.type] || { bg: '#1a1a1a', color: '#888' };
+    const icon      = CAT_ICONS[current.type] || '';
+    const isSacred  = !!current.sacred;
+
+    html += `
+      <div class="now-card${isSacred ? ' sacred-card' : ''}">
+        <div class="now-card-accent-strip" style="background:${isSacred ? '#4caf50' : (TYPE_COLORS[current.type] || '#333')}"></div>
+        <div class="now-card-inner">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
+            <span class="now-category-pill" style="background:${pillStyle.bg};color:${pillStyle.color};">
+              ${icon}${current.type.toUpperCase()}
+            </span>
+            ${isSacred ? `<span class="sacred-now-badge">${SACRED_ICON} SACRED</span>` : ''}
+          </div>
+          <div class="now-title">${current.title}</div>
+          <div class="now-subtitle">${current.subtitle}</div>
+          <div class="now-time-range">${CLOCK_ICON}${formatRange(current.start, current.end)}</div>
+          <div class="now-progress-bar-wrap">
+            <div class="now-progress-bar-fill" style="width:${pct}%;background:${isSacred ? '#4caf50' : (TYPE_COLORS[current.type] || 'var(--accent)')}"></div>
+          </div>
+          <div class="now-progress-meta">
+            <span>${minsLeft} min remaining</span>
+            <span>Started ${minsSince} min ago</span>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    // No active block
+    html += `
+      <div class="now-free-card">
+        <div class="now-free-label">No active session</div>
+        <div class="now-free-time">Free block · ${formatCurrentTime()}</div>
+    `;
+    if (next) {
+      const minsUntil = minutesUntilStart(next);
+      const dayLabel  = next._isToday ? '' : ` (${DAY_FULL[next._dayIdx]})`;
+      html += `
+        <div class="now-next-label">Next up</div>
+        <div class="now-next-title">${next.title}</div>
+        <div class="now-next-sub">${minsUntil > 0 ? `Starts in ${minsUntil} min · at ${next.start}${dayLabel}` : `at ${next.start}${dayLabel}`}</div>
+      `;
+    }
+    html += `</div>`;
+  }
+
+  html += `
+    <button class="now-timetable-btn" onclick="switchView('timetable')" aria-label="View full timetable">
+      ${ARROW_RIGHT_ICON} View full timetable
+    </button>
+  `;
+
+  container.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// VIEW STATE MANAGEMENT
+// ══════════════════════════════════════════════════════════════════════
+let currentView = 'now'; // 'now' | 'timetable'
+
+function switchView(view) {
+  currentView = view;
+  const nowSection   = document.getElementById('nowView');
+  const timetableSec = document.getElementById('timetableSection');
+  const navNow       = document.getElementById('navNow');
+  const navTimetable = document.getElementById('navTimetable');
+  const legendBar    = document.getElementById('legendBar');
+  const floatBtn     = document.getElementById('floatingNowBtn');
+
+  if (view === 'now') {
+    nowSection.classList.remove('hidden');
+    timetableSec.classList.add('hidden');
+    navNow.classList.add('active');
+    navTimetable.classList.remove('active');
+    legendBar.classList.add('hidden');
+    floatBtn.classList.remove('visible');
+    renderNowView();
+  } else {
+    nowSection.classList.add('hidden');
+    timetableSec.classList.remove('hidden');
+    navNow.classList.remove('active');
+    navTimetable.classList.add('active');
+    legendBar.classList.remove('hidden');
+    floatBtn.classList.add('visible');
+    updateActiveBlockHighlights();
+    updateDesktopNowLine();
+    const todayIdx = getTodayIndex();
+    updateMobileNowBanner(todayIdx);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════
+// TIMETABLE MODE (University / Full Week)
+// ══════════════════════════════════════════════════════════════════════
+let timetableMode = 'university'; // 'university' | 'fullweek'
+
+function setTimetableMode(mode) {
+  timetableMode = mode;
+  document.getElementById('modeUniversity').classList.toggle('active', mode === 'university');
+  document.getElementById('modeFullWeek').classList.toggle('active',   mode === 'fullweek');
+  // Rebuild timetable views with filter
+  rebuildTimetable();
+}
+
+function blockVisible(blk) {
+  if (timetableMode === 'university') return isUni(blk.type);
+  return true;
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // MODAL
 // ══════════════════════════════════════════════════════════════════════
@@ -891,22 +1535,33 @@ function openModal(block) {
   document.getElementById('modalTime').textContent     = formatRange(block.start, block.end);
   document.getElementById('modalTitle').textContent    = block.title;
   document.getElementById('modalSubtitle').textContent = block.subtitle;
+
   const tagEl = document.getElementById('modalTag');
-  tagEl.textContent  = block.sacred ? '⬡ SACRED' : block.tag;
-  tagEl.className    = `modal-tag ${block.type}`;
-  tagEl.style.background = block.sacred ? '#0a2010' : '';
-  tagEl.style.color      = block.sacred ? '#4caf50' : '';
+  if (block.sacred) {
+    tagEl.innerHTML = `${SACRED_ICON} SACRED`;
+    tagEl.style.background = '#0a2010';
+    tagEl.style.color = '#4caf50';
+  } else {
+    tagEl.textContent = block.tag;
+    tagEl.style.background = '';
+    tagEl.style.color = '';
+  }
+  tagEl.className = `modal-tag ${block.type}`;
 
   document.getElementById('modalStripe').style.background =
     block.sacred ? '#4caf50' : (TYPE_COLORS[block.type] || '#333');
 
-  const dur = durationLabel(block.start, block.end);
+  const dur    = durationLabel(block.start, block.end);
   const dayIdx = block._dayIdx !== undefined ? block._dayIdx : '';
+  const lecturerRow = block.lecturer
+    ? `<div class="modal-meta-row"><span class="modal-meta-key">Lecturer</span><span class="modal-meta-val">${block.lecturer}</span></div>`
+    : '';
   document.getElementById('modalMeta').innerHTML = `
     <div class="modal-meta-row"><span class="modal-meta-key">Type</span><span class="modal-meta-val">${block.type.charAt(0).toUpperCase()+block.type.slice(1)}</span></div>
     <div class="modal-meta-row"><span class="modal-meta-key">Duration</span><span class="modal-meta-val">${dur}</span></div>
     <div class="modal-meta-row"><span class="modal-meta-key">Tag</span><span class="modal-meta-val">${block.tag}</span></div>
     ${dayIdx !== '' ? `<div class="modal-meta-row"><span class="modal-meta-key">Day</span><span class="modal-meta-val">${DAY_FULL[dayIdx]}</span></div>` : ''}
+    ${lecturerRow}
   `;
 
   modalOverlay.classList.add('open');
@@ -944,19 +1599,23 @@ function buildTimeAxis() {
 // ══════════════════════════════════════════════════════════════════════
 function buildDesktopGrid() {
   const container = document.getElementById('daysContainer');
+  container.innerHTML = '';
   const todayIdx  = getTodayIndex();
+  const current   = getCurrentBlock();
 
   DAYS.forEach((dayName, dayIdx) => {
     const col = document.createElement('div');
     col.className = 'day-col';
     col.id = `desktop-col-${dayIdx}`;
 
-    // Header
+    const isToday = dayIdx === todayIdx;
     const hdr = document.createElement('div');
     hdr.className = 'day-col-header';
-    const isToday = dayIdx === todayIdx;
     hdr.innerHTML = `
-      <div class="day-name ${isToday ? 'today-col' : ''}">${dayName}${isToday ? ' ◆' : ''}</div>
+      <div class="day-name ${isToday ? 'today-col' : ''}">
+        ${dayName}
+        ${isToday ? '<span class="today-diamond" aria-hidden="true"></span>' : ''}
+      </div>
     `;
     col.appendChild(hdr);
 
@@ -970,14 +1629,20 @@ function buildDesktopGrid() {
       col.appendChild(line);
     }
 
-    // Blocks
-    TIMETABLE[dayIdx].forEach((blk, i) => {
+    // Blocks (filtered by mode)
+    const visibleBlocks = TIMETABLE[dayIdx].filter(blockVisible);
+    visibleBlocks.forEach((blk) => {
       blk._dayIdx = dayIdx;
       const blockTop = minToBlockTop(timeToMin(blk.start));
       const bh = blockHeight(blk.start, blk.end);
 
+      const isActive = current &&
+        current._dayIdx === dayIdx &&
+        current.start === blk.start &&
+        current.end === blk.end;
+
       const el = document.createElement('div');
-      el.className = `block ${blk.type}${blk.sacred ? ' sacred' : ''}`;
+      el.className = `block ${blk.type}${blk.sacred ? ' sacred' : ''}${isActive ? ' block-active' : ''}`;
       el.style.top    = `${blockTop}px`;
       el.style.height = `${bh}px`;
       el.setAttribute('role', 'button');
@@ -988,11 +1653,14 @@ function buildDesktopGrid() {
       const showTag      = bh >= 46;
       const showTime     = bh >= 22;
 
+      const sacredTagHtml = `<span class="sacred-tag">${SACRED_ICON} SACRED</span>`;
+      const liveDotHtml = isActive ? `<span class="live-dot" aria-hidden="true"></span>` : '';
+
       el.innerHTML = `
-        ${showTime ? `<div class="block-time">${formatRange(blk.start, blk.end)}</div>` : ''}
+        ${showTime ? `<div class="block-time">${liveDotHtml}${formatRange(blk.start, blk.end)}</div>` : ''}
         <div class="block-title">${blk.title}</div>
         ${showSubtitle ? `<div class="block-subtitle">${blk.subtitle}</div>` : ''}
-        ${showTag ? `<div class="block-tag ${blk.type}">${blk.sacred ? '<span class="sacred-tag">⬡ SACRED</span>' : blk.tag}</div>` : ''}
+        ${showTag ? `<div class="block-tag ${blk.type}">${blk.sacred ? sacredTagHtml : blk.tag}</div>` : ''}
       `;
 
       el.addEventListener('click',  () => openModal(blk));
@@ -1033,6 +1701,13 @@ function updateDesktopNowLine() {
   line.setAttribute('data-time', formatTime(nowMin));
 }
 
+function updateActiveBlockHighlights() {
+  if (currentView !== 'timetable') return;
+  // Re-render the desktop grid to reflect current active block
+  buildDesktopGrid();
+  buildMobileView();
+}
+
 // ══════════════════════════════════════════════════════════════════════
 // BUILD MOBILE VIEW
 // ══════════════════════════════════════════════════════════════════════
@@ -1040,12 +1715,19 @@ function buildMobileView() {
   const tabsEl   = document.getElementById('dayTabs');
   const viewsEl  = document.getElementById('dayViews');
   const todayIdx = getTodayIndex();
+  const current  = getCurrentBlock();
+
+  tabsEl.innerHTML  = '';
+  viewsEl.innerHTML = '';
 
   DAYS.forEach((dayName, dayIdx) => {
+    const dayBlocks = TIMETABLE[dayIdx].filter(blockVisible);
+    const count     = dayBlocks.length;
+
     // Tab
     const tab = document.createElement('button');
     tab.className = `day-tab${dayIdx === todayIdx ? ' active' : ''}`;
-    tab.textContent = dayName;
+    tab.innerHTML = `${dayName}<span class="tab-count">${count}</span>`;
     tab.setAttribute('role', 'tab');
     tab.setAttribute('aria-selected', dayIdx === todayIdx ? 'true' : 'false');
     tab.setAttribute('aria-controls', `mobile-day-${dayIdx}`);
@@ -1060,19 +1742,29 @@ function buildMobileView() {
     view.setAttribute('role', 'tabpanel');
     view.setAttribute('aria-labelledby', `tab-${dayIdx}`);
 
-    TIMETABLE[dayIdx].forEach((blk) => {
+    dayBlocks.forEach((blk) => {
       blk._dayIdx = dayIdx;
+      const isActive = current &&
+        current._dayIdx === dayIdx &&
+        current.start === blk.start &&
+        current.end === blk.end;
+
       const card = document.createElement('div');
-      card.className = `mobile-block ${blk.type}${blk.sacred ? ' sacred' : ''}`;
+      card.className = `mobile-block ${blk.type}${blk.sacred ? ' sacred' : ''}${isActive ? ' block-active' : ''}`;
       card.setAttribute('role', 'button');
       card.setAttribute('tabindex', '0');
       card.setAttribute('aria-label', `${blk.title} ${formatRange(blk.start, blk.end)}`);
 
+      const liveDotHtml = isActive ? `<span class="live-dot" aria-hidden="true"></span>` : '';
+      const sacredTagHtml = blk.sacred
+        ? `<span class="mb-tag sacred">${SACRED_ICON} SACRED</span>`
+        : `<span class="mb-tag ${blk.type}">${blk.tag}</span>`;
+
       card.innerHTML = `
-        <div class="mb-time">${formatRange(blk.start, blk.end)}</div>
+        <div class="mb-time">${liveDotHtml}${formatRange(blk.start, blk.end)}</div>
         <div class="mb-title">${blk.title}</div>
         <div class="mb-subtitle">${blk.subtitle}</div>
-        <span class="mb-tag ${blk.sacred ? 'sacred' : blk.type}">${blk.sacred ? '⬡ SACRED' : blk.tag}</span>
+        ${sacredTagHtml}
       `;
 
       card.addEventListener('click',   () => openModal(blk));
@@ -1088,12 +1780,10 @@ function buildMobileView() {
 }
 
 function switchMobileDay(dayIdx) {
-  // Update tabs
   document.querySelectorAll('.day-tab').forEach((t, i) => {
     t.classList.toggle('active', i === dayIdx);
     t.setAttribute('aria-selected', i === dayIdx ? 'true' : 'false');
   });
-  // Update views
   document.querySelectorAll('.day-view').forEach((v, i) => {
     if (i === dayIdx) {
       v.style.opacity = '0';
@@ -1107,12 +1797,13 @@ function switchMobileDay(dayIdx) {
 }
 
 function updateMobileNowBanner(dayIdx) {
-  const banner   = document.getElementById('mobileNowBanner');
-  const todayIdx = getTodayIndex();
+  const banner     = document.getElementById('mobileNowBanner');
+  const bannerText = document.getElementById('mobileNowBannerText');
+  const todayIdx   = getTodayIndex();
   if (dayIdx === todayIdx) {
     const nowMin = getCurrentMinutes();
     if (nowMin >= START_MIN && nowMin <= START_MIN + 960) {
-      banner.textContent = `NOW — ${formatTime(nowMin)}`;
+      bannerText.textContent = `NOW — ${formatTime(nowMin)}`;
       banner.classList.add('visible');
       return;
     }
@@ -1132,7 +1823,6 @@ function buildWeekSummary() {
     const uniCount = blocks.filter(b => isUni(b.type)).length;
     const perCount = blocks.filter(b => !isUni(b.type)).length;
 
-    // Find dominant personal type
     const typeCounts = {};
     blocks.filter(b => !isUni(b.type)).forEach(b => { typeCounts[b.type] = (typeCounts[b.type]||0)+1; });
     const dominant = Object.entries(typeCounts).sort((a,b)=>b[1]-a[1])[0];
@@ -1153,6 +1843,14 @@ function buildWeekSummary() {
 }
 
 // ══════════════════════════════════════════════════════════════════════
+// REBUILD TIMETABLE (called when mode changes)
+// ══════════════════════════════════════════════════════════════════════
+function rebuildTimetable() {
+  buildDesktopGrid();
+  buildMobileView();
+}
+
+// ══════════════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════════════
 (function init() {
@@ -1160,13 +1858,19 @@ function buildWeekSummary() {
   buildDesktopGrid();
   buildMobileView();
   buildWeekSummary();
+  renderNowView(); // Default view
 
-  // Update time every 60s
-  setInterval(() => {
+  // Auto-refresh every 60 seconds
+  const ticker = setInterval(() => {
+    renderNowView();
     updateDesktopNowLine();
     const todayIdx = getTodayIndex();
     updateMobileNowBanner(todayIdx);
+    updateActiveBlockHighlights();
   }, 60000);
+
+  // Clean up on page unload
+  window.addEventListener('beforeunload', () => clearInterval(ticker));
 })();
 </script>
 </body>
