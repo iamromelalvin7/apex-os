@@ -17,7 +17,7 @@
   <style>
     /* ─── RESET ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
     body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; min-height: 100vh; overflow-x: hidden; }
 
     /* ─── DESIGN TOKENS — DARK (default) ─────────────────── */
@@ -1311,17 +1311,47 @@
 
     /* ─── RESPONSIVE ─────────────────────────────────────── */
     @media (max-width: 767px) {
+      /* ── Layout ── */
       .desktop-grid { display: none; }
       .legend { display: none; }
       .week-summary { display: none; }
       .timetable-controls { display: none; }
       .mobile-view { display: block; }
+
+      /* ── Header top strip: hide long institution text, keep active badge ── */
       .apex-header { padding: 0; }
+      .header-top-strip { padding: 4px 12px; }
+      .header-top-strip .institution-text { display: none; }
+
+      /* ── Header main row: compact on mobile ── */
+      .header-main-row { padding: 0 12px; height: 48px; gap: 8px; }
+      .header-logo { width: 28px; height: 28px; font-size: 15px; border-radius: 6px; }
+      .header-title { font-size: 16px; }
+      .header-sub { display: none; }
       .header-meta-pills { display: none !important; }
       .header-divider { display: none !important; }
-      .apex-footer { padding: 8px 16px; }
-      #nowView { padding: 16px; }
-      .tasks-panel { padding: 14px 16px 16px; }
+      .header-controls { gap: 6px; }
+      .theme-toggle-btn { width: 26px; height: 26px; }
+      .view-nav-btn { padding: 4px 10px; font-size: 8px; }
+
+      /* ── NOW view ── */
+      #nowView { padding: 12px; max-width: 100%; }
+      .now-card { padding: 16px; }
+      .now-title { font-size: 21px; }
+      .now-free-card { padding: 16px; }
+      .now-free-time { font-size: 18px; }
+
+      /* ── Tasks panel ── */
+      .tasks-panel { padding: 12px 12px 14px; }
+      .task-form { gap: 5px; }
+      .task-input { font-size: 11px; padding: 7px 8px; }
+
+      /* ── Modal: full-width bottom sheet ── */
+      .modal-sheet { max-width: 100%; border-radius: 16px 16px 0 0; padding: 16px 16px 28px; }
+
+      /* ── Footer ── */
+      .apex-footer { padding: 6px 12px; }
+      .apex-footer span:last-child { display: none; }
     }
 
     @media (min-width: 768px) {
