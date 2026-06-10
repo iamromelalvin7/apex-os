@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -1136,90 +1136,69 @@
 
   </main>
 
-  <!-- ═══════════════════════════════════════════════════════ FOOTER -->
-  <footer class="apex-footer">
-    <span>APEX &middot; Romel Lartey &middot; 2025/2026</span>
-    <span>github.com/iamromelalvin7</span>
-  </footer>
-
-</div><!-- #app -->
-
-<!-- ═══════════════════════════════════════════════════════════ MODAL -->
-<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal-sheet" style="position:relative;">
-    <button class="modal-close" id="modalClose" aria-label="Close detail panel">&times;</button>
-    <div class="modal-handle"></div>
-    <div class="modal-type-stripe" id="modalStripe"></div>
-    <div class="modal-time" id="modalTime"></div>
-    <div class="modal-title" id="modalTitle"></div>
-    <div class="modal-subtitle" id="modalSubtitle"></div>
-    <div class="modal-tag" id="modalTag"></div>
-    <div class="modal-meta" id="modalMeta"></div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════ FLOATING NOW BUTTON -->
-<button id="floatingNowBtn" aria-label="Go to NOW view" onclick="switchView('now')">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
-  </svg>
-  NOW
-</button>
-
-<script>
-// ══════════════════════════════════════════════════════════════════════
-// SERVICE WORKER REGISTRATION
-// ══════════════════════════════════════════════════════════════════════
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// TIMETABLE DATA — V2 corrected (from official UG timetable)
-// NOTE: Variable named "blockTop" intentionally — avoid `top` (clashes with window.top)
-// ══════════════════════════════════════════════════════════════════════
-const DAYS = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
-const DAY_FULL = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-// JS getDay(): 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
-const JS_DAY_MAP = [6, 0, 1, 2, 3, 4, 5]; // maps JS day index to our 0-6 array
-
-const TIMETABLE = [
+  <!-- ═══════�const TIMETABLE = [
   // ── MONDAY (index 0)
   [
-    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 208',           subtitle:'Software Engineering · SF-F2',                              tag:'LECTURE',  lecturer:'Mr. John Assiamah' },
-    { start:'10:30', end:'12:25', type:'lab',      title:'CPEN 208 LAB',       subtitle:'Software Engineering · Huawei Lab',                         tag:'LAB',      lecturer:'Mr. John Assiamah' },
-    { start:'12:30', end:'13:25', type:'lecture',  title:'SENG 202',           subtitle:'Differential Equations · JQB 09',                           tag:'LECTURE',  lecturer:'Dr. John Kutor' },
-    { start:'14:00', end:'16:00', type:'group',    title:'Study Group',        subtitle:'Post-lecture session',                                      tag:'2HRS',     lecturer:'' },
-    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review x3',  subtitle:'CPEN 208 · CPEN 208 LAB · SENG 202 — 20 min each',          tag:'REVIEW',   lecturer:'' },
-    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Primary build window',                                      tag:'2HRS',     lecturer:'' },
+    { start:'08:30', end:'10:25', type:'lecture',  title:'CPEN 208',              subtitle:'Software Engineering · SF-F2',                              tag:'LECTURE',  lecturer:'Mr. John Assiamah' },
+    { start:'10:30', end:'13:25', type:'lab',      title:'CPEN 208 LAB',          subtitle:'Software Engineering · Huawei Lab',                         tag:'LAB',      lecturer:'Mr. John Assiamah' },
+    { start:'13:30', end:'15:25', type:'lecture',  title:'SENG 202',              subtitle:'Engineering Mathematics · JQB 09',                          tag:'LECTURE',  lecturer:'Dr. John Kutor' },
+    { start:'16:00', end:'18:00', type:'group',    title:'Study Group',           subtitle:'Post-lecture session',                                      tag:'2HRS',     lecturer:'' },
+    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review x3',     subtitle:'CPEN 208 · CPEN 208 LAB · SENG 202 — 20 min each',          tag:'REVIEW',   lecturer:'' },
+    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',   subtitle:'Primary build window',                                      tag:'2HRS',     lecturer:'' },
   ],
   // ── TUESDAY (index 1)
   [
-    { start:'07:30', end:'08:25', type:'lecture',  title:'CPEN 212',           subtitle:'Data Communications · SF-F2',                               tag:'LECTURE',  lecturer:'Dr. Isaac Adjaye Aboagye' },
-    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 204',           subtitle:'Data Structures & Algorithms · EW-S2',                      tag:'LECTURE',  lecturer:'Mrs. Gifty Osei' },
-    { start:'11:30', end:'13:25', type:'lab',      title:'CPEN 204 LAB',       subtitle:'Data Structures & Algorithms · Huawei Lab',                 tag:'LAB',      lecturer:'Mrs. Gifty Osei' },
-    { start:'15:30', end:'16:25', type:'lab',      title:'SENG 202 TUT',       subtitle:'Differential Equations · NNB1',                             tag:'TUTORIAL', lecturer:'Dr. John Kutor' },
-    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review x3',  subtitle:'CPEN 212 · CPEN 204 · SENG 202 TUT — 20 min each',          tag:'REVIEW',   lecturer:'' },
-    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Heaviest day. Protect this window.',                        tag:'2HRS',     lecturer:'' },
+    { start:'07:30', end:'09:25', type:'lecture',  title:'CPEN 212',              subtitle:'Data Communications · SF-F2',                               tag:'LECTURE',  lecturer:'Dr. Isaac Adjaye Aboagye' },
+    { start:'09:30', end:'11:25', type:'lecture',  title:'CPEN 204',              subtitle:'Data Structures & Algorithms · EW-S2',                      tag:'LECTURE',  lecturer:'Mrs. Gifty Osei' },
+    { start:'12:30', end:'15:25', type:'lab',      title:'CPEN 204 LAB',          subtitle:'Data Structures & Algorithms · Huawei Lab',                 tag:'LAB',      lecturer:'Mrs. Gifty Osei' },
+    { start:'15:30', end:'17:25', type:'lab',      title:'SENG 202-TUT',          subtitle:'Engineering Mathematics · NNB1',                            tag:'TUTORIAL', lecturer:'Dr. John Kutor' },
+    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review x3',     subtitle:'CPEN 212 · CPEN 204 · SENG 202 TUT — 20 min each',          tag:'REVIEW',   lecturer:'' },
+    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',   subtitle:'Heaviest day. Protect this window.',                        tag:'2HRS',     lecturer:'' },
   ],
   // ── WEDNESDAY (index 2)
   [
-    { start:'08:30', end:'09:25', type:'lecture',  title:'CPEN 202',           subtitle:'Computer Systems Design · SF-F2',                           tag:'LECTURE',  lecturer:'Mr. Agyare Debra' },
-    { start:'09:30', end:'10:25', type:'lecture',  title:'CBAS 210',           subtitle:'Academic Writing II · JQB 22',                              tag:'LECTURE',  lecturer:'Dr. Magaret Ansah Richardson' },
-    { start:'11:30', end:'13:25', type:'lab',      title:'CPEN 212 LAB',       subtitle:'Data Communications · Electronics Lab',                     tag:'LAB',      lecturer:'Dr. Isaac Adjaye Aboagye' },
-    { start:'15:30', end:'16:25', type:'lab',      title:'CPEN 206 LAB',       subtitle:'Linear Circuits · Electronics Lab',                         tag:'LAB',      lecturer:'Dr. Percy Okae' },
-    { start:'19:30', end:'20:00', type:'study',    title:'Lecture Review x2',  subtitle:'CPEN 202 · CBAS 210 — 20 min each',                         tag:'REVIEW',   lecturer:'' },
-    { start:'20:00', end:'22:00', type:'ml',       title:'ML Consolidation',   subtitle:'NotebookLM · Quiz gaps · Review notes',                     tag:'NOTEBOOKLM', lecturer:'' },
+    { start:'07:30', end:'09:25', type:'lecture',  title:'CPEN 202',              subtitle:'Computer Systems Design · SF-F2',                           tag:'LECTURE',  lecturer:'Mr. Agyare Debra' },
+    { start:'09:30', end:'11:25', type:'lecture',  title:'CBAS 210',              subtitle:'Academic Writing II · JQB22',                               tag:'LECTURE',  lecturer:'Dr. Magaret Ansah Richardson' },
+    { start:'12:30', end:'15:25', type:'lab',      title:'CPEN 212 LAB',          subtitle:'Data Communications · Electronics Lab',                     tag:'LAB',      lecturer:'Dr. Isaac Adjaye Aboagye' },
+    { start:'15:30', end:'17:25', type:'lab',      title:'CPEN 206 LAB',          subtitle:'Linear Circuits · Electronics Lab',                         tag:'LAB',      lecturer:'Dr. Percy Okae' },
+    { start:'19:30', end:'20:00', type:'study',    title:'Lecture Review x2',     subtitle:'CPEN 202 · CBAS 210 — 20 min each',                         tag:'REVIEW',   lecturer:'' },
+    { start:'20:00', end:'22:00', type:'ml',       title:'ML Consolidation',      subtitle:'NotebookLM · Quiz gaps · Review notes',                     tag:'NOTEBOOKLM', lecturer:'' },
   ],
   // ── THURSDAY (index 3)
   [
-    { start:'09:30', end:'10:25', type:'lecture',  title:'CPEN 206',           subtitle:'Linear Circuits · WW-S3',                                  tag:'LECTURE',  lecturer:'Dr. Percy Okae' },
-    { start:'10:30', end:'12:25', type:'lab',      title:'SENG 202 LAB',       subtitle:'Differential Equations · JQB 14',                          tag:'LAB',      lecturer:'Dr. John Kutor' },
-    { start:'14:00', end:'16:00', type:'group',    title:'Study Group',        subtitle:'Post-lecture session',                                     tag:'2HRS',     lecturer:'' },
-    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review x2',  subtitle:'CPEN 206 · SENG 202 LAB — 20 min each',                    tag:'REVIEW',   lecturer:'' },
-    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',subtitle:'Biggest session of the week',                              tag:'2HRS',     lecturer:'' },
+    { start:'09:30', end:'11:25', type:'lecture',  title:'CPEN 206',              subtitle:'Linear Circuits · WW-S3',                                  tag:'LECTURE',  lecturer:'Dr. Percy Okae' },
+    { start:'11:30', end:'13:25', type:'lab',      title:'SENG 202-Lab',          subtitle:'Engineering Mathematics · JQB14',                          tag:'LAB',      lecturer:'Dr. John Kutor' },
+    { start:'14:00', end:'16:00', type:'group',    title:'Study Group',           subtitle:'Post-lecture session',                                     tag:'2HRS',     lecturer:'' },
+    { start:'19:30', end:'20:30', type:'study',    title:'Lecture Review x2',     subtitle:'CPEN 206 · SENG 202 LAB — 20 min each',                    tag:'REVIEW',   lecturer:'' },
+    { start:'21:00', end:'23:00', type:'backend',  title:'Backend — Deep Work',   subtitle:'Biggest session of the week',                              tag:'2HRS',     lecturer:'' },
+  ],
+  // ── FRIDAY (index 4)
+  [
+    { start:'09:00', end:'11:00', type:'backend',  title:'Backend — Morning Session', subtitle:'No lectures. Fresh mind. Best focus.',               tag:'2HRS',     lecturer:'' },
+    { start:'12:00', end:'13:30', type:'group',    title:'Study Group',           subtitle:'Time TBC',                                                 tag:'TBC',      lecturer:'' },
+    { start:'13:30', end:'15:25', type:'lab',      title:'CPEN 202 LAB',          subtitle:'Computer Systems Design · Electronics Lab',                 tag:'LAB',      lecturer:'Mr. Agyare Debra' },
+    { start:'15:30', end:'17:00', type:'robotics', title:'ESP32 — Competition Prep', subtitle:'Ghana Robotics Competition · Daily reps',             tag:'COMP',     lecturer:'' },
+    { start:'17:00', end:'19:00', type:'ml',       title:'ML Session',            subtitle:'Weekly meeting',                                           tag:'MEETING',  lecturer:'' },
+    { start:'20:00', end:'22:00', type:'ml',       title:'ML Consolidation',      subtitle:'NotebookLM · Apply to backend context',                    tag:'NOTEBOOKLM', lecturer:'' },
+  ],
+  // ── SATURDAY (index 5)
+  [
+    { start:'10:00', end:'13:00', type:'backend',  title:'Backend Sprint',        subtitle:'SACRED — nothing moves this. Ever.',                        tag:'SACRED',   lecturer:'', sacred: true },
+    { start:'14:00', end:'17:00', type:'study',    title:'Personal Study',        subtitle:'Deep block · Past questions · CPEN 204 + SENG 202 priority', tag:'3HRS',    lecturer:'' },
+    { start:'15:00', end:'17:00', type:'ml',       title:'ML Session',            subtitle:'Weekly meeting',                                           tag:'MEETING',  lecturer:'' },
+    { start:'17:30', end:'18:30', type:'ml',       title:'ML Self-Study',         subtitle:'NumPy · Pandas · Course materials',                        tag:'SELF',     lecturer:'' },
+    { start:'19:30', end:'21:00', type:'robotics', title:'Arduino Bootcamp',      subtitle:'Evening session',                                          tag:'EMBEDDED', lecturer:'' },
+    { start:'21:00', end:'23:00', type:'review',   title:'Rest',                  subtitle:'Earned. Take it fully.',                                   tag:'REST',     lecturer:'' },
+  ],
+  // ── SUNDAY (index 6)
+  [
+    { start:'10:00', end:'13:00', type:'study',    title:'Personal Study',        subtitle:'Remaining subjects · Weak areas from the week',             tag:'3HRS',     lecturer:'' },
+    { start:'14:00', end:'16:00', type:'backend',  title:'Backend — Weekend Session 2', subtitle:'Overflow · Debug · GitHub push',                  tag:'2HRS',     lecturer:'' },
+    { start:'19:30', end:'21:00', type:'robotics', title:'Arduino Bootcamp',      subtitle:'Evening session',                                          tag:'EMBEDDED', lecturer:'' },
+    { start:'20:00', end:'21:00', type:'review',   title:'Weekly Review',         subtitle:'What shipped vs planned? GPA risks?',                      tag:'REVIEW',   lecturer:'' },
+    { start:'21:00', end:'22:00', type:'review',   title:'Next Week Planning',    subtitle:'One backend target · One subject focus',                   tag:'PLAN',     lecturer:'' },
+  ],
+];k',subtitle:'Biggest session of the week',                              tag:'2HRS',     lecturer:'' },
   ],
   // ── FRIDAY (index 4)
   [
